@@ -1,8 +1,6 @@
 module github.com/MichaelGenchev/smart-home-system
 
-go 1.23.0
-
-require github.com/google/uuid v1.6.0
+go 1.21
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -28,6 +26,6 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
-	google.golang.org/grpc v1.65.0 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
+	google.golang.org/grpc v1.65.0
+	google.golang.org/protobuf v1.34.2
 )
