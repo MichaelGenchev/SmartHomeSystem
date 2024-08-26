@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-service
+  labels:
+    app: device-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: device-service
+  template:
+    metadata:
+      labels:
+        app: device-service
+    spec:
+      containers:
+      - name: device-service
+        image: your-registry.com/device-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POSTGRES_URI
+          valueFrom:
+            configMapKeyRef:
+              name: device-service-config
+              key: postgres_uri
+        - name: MONGO_URI
+          valueFrom:
+            configMapKeyRef:
+              name: device-service-config
+              key: mongo_uri

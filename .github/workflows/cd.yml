@@ -1,0 +1,23 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+    - name: Configure kubectl
+      run: echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig.yaml
+    - name: Deploy to Kubernetes
+      run: |
+        export KUBECONFIG=./kubeconfig.yaml
+        make k8s-deploy-all
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

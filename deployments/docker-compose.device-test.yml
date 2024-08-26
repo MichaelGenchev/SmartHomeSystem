@@ -1,0 +1,33 @@
+# docker-compose.test.yml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+    ports:
+      - "5432:5432"
+
+  mongo:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_DATABASE: testdb
+    ports:
+      - "27017:27017"
+
+  test:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile.device-test
+    depends_on:
+      - postgres
+      - mongo
+    environment:
+      POSTGRES_URI: "postgresql://testuser:testpass@postgres:5432/testdb?sslmode=disable"
+      MONGO_URI: "mongodb://mongo:27017"
+      MONGO_DB: "testdb"
+    volumes:
+      - .:/app
