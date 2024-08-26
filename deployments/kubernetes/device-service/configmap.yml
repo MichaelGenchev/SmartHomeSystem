@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: device-service-config
+data:
+  postgres_uri: "postgresql://username:password@postgres-service:5432/device_db?sslmode=disable"
+  mongo_uri: "mongodb://mongo-service:27017"

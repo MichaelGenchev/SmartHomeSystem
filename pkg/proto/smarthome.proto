@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package smarthome;
+
+option go_package = "github.com/yourusername/smart-home-system/pkg/proto";
+
+import "google/protobuf/timestamp.proto";
+
+// Device Service
+service DeviceService {
+  rpc CreateDevice (CreateDeviceRequest) returns (Device);
+  rpc GetDevice (GetDeviceRequest) returns (Device);
+  rpc UpdateDeviceState (UpdateDeviceStateRequest) returns (Device);
+  rpc ListDevices (ListDevicesRequest) returns (ListDevicesResponse);
+}
+
+message Device {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string state = 4;
+  string user_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateDeviceRequest {
+  string name = 1;
+  string type = 2;
+  string user_id = 3;
+}
+
+message GetDeviceRequest {
+  string id = 1;
+}
+
+message UpdateDeviceStateRequest {
+  string id = 1;
+  string state = 2;
+}
+
+message ListDevicesRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListDevicesResponse {
+  repeated Device devices = 1;
+  int32 total = 2;
+}
+
+// User Service
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (User);
+  rpc GetUser (GetUserRequest) returns (User);
+  rpc UpdateUser (UpdateUserRequest) returns (User);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
