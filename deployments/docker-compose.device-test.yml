@@ -1,4 +1,3 @@
-# docker-compose.test.yml
 version: '3.8'
 
 services:
@@ -26,8 +25,8 @@ services:
       - postgres
       - mongo
     environment:
-      POSTGRES_URI: "postgresql://testuser:testpass@postgres:5432/testdb?sslmode=disable"
-      MONGO_URI: "mongodb://mongo:27017"
-      MONGO_DB: "testdb"
+      DEVICE_POSTGRES_URI: "postgresql://testuser:testpass@postgres:5432/testdb?sslmode=disable"
+      DEVICE_MONGO_URI: "mongodb://mongo:27017"
+      DEVICE_MONGO_DB: "testdb"
     volumes:
       - .:/app

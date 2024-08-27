@@ -3,17 +3,14 @@ package user
 import (
 	"context"
 
-	pb "github.com/MichaelGenchev/smart-home-system/pkg/proto"
-	"github.com/MichaelGenchev/smart-home-system/internal/user/service"
 	"github.com/MichaelGenchev/smart-home-system/internal/user/repository"
+	"github.com/MichaelGenchev/smart-home-system/internal/user/service"
 	"github.com/MichaelGenchev/smart-home-system/pkg/models"
-
-
+	pb "github.com/MichaelGenchev/smart-home-system/pkg/proto"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
-
 )
 
 type GRPCServer struct {

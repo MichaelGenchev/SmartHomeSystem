@@ -1,4 +1,3 @@
-// internal/common/config/config.go
 package config
 
 import (
@@ -9,35 +8,57 @@ import (
 )
 
 type Config struct {
-	// Server
-	GRPCAddr string
-	HTTPAddr string
+	Server   ServerConfig
+	Database DatabaseConfig
+	App      AppConfig
+	Auth     AuthConfig
+}
 
-	// PostgreSQL
-	PostgresURI string
+type ServerConfig struct {
+	GatewayPort    string
+	UserGRPCAddr   string
+	UserHTTPAddr   string
+	DeviceGRPCAddr string
+	DeviceHTTPAddr string
+}
 
-	// MongoDB
-	MongoURI string
-	MongoDB  string
+type DatabaseConfig struct {
+	UserPostgresURI   string
+	DevicePostgresURI string
+	DeviceMongoURI    string
+	DeviceMongoDB     string
+}
 
-	// App
+type AppConfig struct {
 	Debug           bool
 	ShutdownTimeout time.Duration
+}
 
-	// Auth (for future use)
+type AuthConfig struct {
 	JWTSecret string
 }
 
 func Load() (*Config, error) {
 	config := &Config{
-		GRPCAddr:        getEnv("GRPC_ADDR", ":50051"),
-		HTTPAddr:        getEnv("HTTP_ADDR", ":8080"),
-		PostgresURI:     getEnv("POSTGRES_URI", "postgresql://user:password@localhost:5432/devicedb?sslmode=disable"),
-		MongoURI:        getEnv("MONGO_URI", "mongodb://localhost:27017"),
-		MongoDB:         getEnv("MONGO_DB", "devicedb"),
-		Debug:           getEnvAsBool("DEBUG", false),
-		ShutdownTimeout: getEnvAsDuration("SHUTDOWN_TIMEOUT", 5*time.Second),
-		JWTSecret:       getEnv("JWT_SECRET", "your-secret-key"),
+		Server: ServerConfig{
+			UserGRPCAddr:   getEnv("USER_GRPC_ADDR", ":50051"),
+			UserHTTPAddr:   getEnv("USER_HTTP_ADDR", ":8080"),
+			DeviceGRPCAddr: getEnv("DEVICE_GRPC_ADDR", ":50052"),
+			DeviceHTTPAddr: getEnv("DEVICE_HTTP_ADDR", ":8081"),
+		},
+		Database: DatabaseConfig{
+			UserPostgresURI:   getEnv("USER_POSTGRES_URI", "postgresql://user:password@localhost:5432/userdb?sslmode=disable"),
+			DevicePostgresURI: getEnv("DEVICE_POSTGRES_URI", "postgresql://user:password@localhost:5432/devicedb?sslmode=disable"),
+			DeviceMongoURI:    getEnv("DEVICE_MONGO_URI", "mongodb://localhost:27017"),
+			DeviceMongoDB:     getEnv("DEVICE_MONGO_DB", "devicedb"),
+		},
+		App: AppConfig{
+			Debug:           getEnvAsBool("DEBUG", false),
+			ShutdownTimeout: getEnvAsDuration("SHUTDOWN_TIMEOUT", 5*time.Second),
+		},
+		Auth: AuthConfig{
+			JWTSecret: getEnv("JWT_SECRET", "your-secret-key"),
+		},
 	}
 
 	if err := config.validate(); err != nil {
@@ -48,14 +69,17 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) validate() error {
-	if c.PostgresURI == "" {
-		return fmt.Errorf("POSTGRES_URI is required")
+	if c.Database.UserPostgresURI == "" {
+		return fmt.Errorf("USER_POSTGRES_URI is required")
 	}
-	if c.MongoURI == "" {
-		return fmt.Errorf("MONGO_URI is required")
+	if c.Database.DevicePostgresURI == "" {
+		return fmt.Errorf("DEVICE_POSTGRES_URI is required")
 	}
-	if c.MongoDB == "" {
-		return fmt.Errorf("MONGO_DB is required")
+	if c.Database.DeviceMongoURI == "" {
+		return fmt.Errorf("DEVICE_MONGO_URI is required")
+	}
+	if c.Database.DeviceMongoDB == "" {
+		return fmt.Errorf("DEVICE_MONGO_DB is required")
 	}
 	return nil
 }

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"time"
 
-
 	"github.com/MichaelGenchev/smart-home-system/pkg/models"
 	"github.com/lib/pq"
 )

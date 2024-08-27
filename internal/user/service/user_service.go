@@ -17,27 +17,25 @@ type UserService interface {
 	DeleteUser(ctx context.Context, id string) error
 }
 
-
 type service struct {
 	repo repository.Repository
 }
 
-func NewUserService(repo repository.Repository) UserService{
+func NewUserService(repo repository.Repository) UserService {
 	return &service{repo: repo}
 }
 
-
 func (s *service) CreateUser(ctx context.Context, name, email, password string) (*models.User, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 
 	user := &models.User{
-		ID: uuid.New().String(),
-		Name: name,
-		Email: email,
-		Password: string(hashedPassword),
+		ID:        uuid.New().String(),
+		Name:      name,
+		Email:     email,
+		Password:  string(hashedPassword),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -45,7 +43,7 @@ func (s *service) CreateUser(ctx context.Context, name, email, password string) 
 	if err := s.repo.CreateUser(ctx, user); err != nil {
 		return nil, err
 	}
-	return user,nil
+	return user, nil
 }
 
 func (s *service) GetUser(ctx context.Context, id string) (*models.User, error) {
@@ -63,11 +61,11 @@ func (s *service) UpdateUser(ctx context.Context, id, name, email string) (*mode
 	user.UpdatedAt = time.Now()
 
 	if err := s.repo.UpdateUser(ctx, user); err != nil {
-		return nil ,err
+		return nil, err
 	}
 	return user, nil
 }
 
 func (s *service) DeleteUser(ctx context.Context, id string) error {
-	return s.repo.DeleteUser(ctx,id)
+	return s.repo.DeleteUser(ctx, id)
 }

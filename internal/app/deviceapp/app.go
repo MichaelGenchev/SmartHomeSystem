@@ -40,7 +40,7 @@ func (a *App) Initialize(ctx context.Context) error {
 	var err error
 
 	// Initialize SQL database connection
-	a.sqlDB, err = sql.Open("postgres", a.cfg.PostgresURI)
+	a.sqlDB, err = sql.Open("postgres", a.cfg.Database.DevicePostgresURI)
 	if err != nil {
 		return fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
@@ -51,7 +51,7 @@ func (a *App) Initialize(ctx context.Context) error {
 	}
 
 	// Initialize MongoDB client
-	a.mongoClient, err = mongo.Connect(ctx, options.Client().ApplyURI(a.cfg.MongoURI))
+	a.mongoClient, err = mongo.Connect(ctx, options.Client().ApplyURI(a.cfg.Database.DeviceMongoURI))
 	if err != nil {
 		return fmt.Errorf("failed to connect to MongoDB: %w", err)
 	}
@@ -63,7 +63,7 @@ func (a *App) Initialize(ctx context.Context) error {
 
 	// Initialize repositories
 	sqlRepo := repository.NewSQLRepository(a.sqlDB)
-	mongoRepo := repository.NewMongoRepository(a.mongoClient.Database(a.cfg.MongoDB).Collection("devices"))
+	mongoRepo := repository.NewMongoRepository(a.mongoClient.Database(a.cfg.Database.DeviceMongoDB).Collection("devices"))
 	combinedRepo := repository.NewCombinedRepository(sqlRepo, mongoRepo)
 
 	// Initialize service
@@ -78,13 +78,13 @@ func (a *App) Initialize(ctx context.Context) error {
 
 func (a *App) Run() error {
 	// Start gRPC server
-	listener, err := net.Listen("tcp", a.cfg.GRPCAddr)
+	listener, err := net.Listen("tcp", a.cfg.Server.DeviceGRPCAddr)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %w", err)
 	}
 
 	go func() {
-		log.Printf("Starting gRPC server on %s", a.cfg.GRPCAddr)
+		log.Printf("Starting gRPC server on %s", a.cfg.Server.DeviceGRPCAddr)
 		if err := a.grpcServer.Serve(listener); err != nil {
 			log.Printf("gRPC server error: %v", err)
 		}

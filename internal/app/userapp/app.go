@@ -12,9 +12,9 @@ import (
 	"syscall"
 
 	"github.com/MichaelGenchev/smart-home-system/internal/common/config"
+	grpcServer "github.com/MichaelGenchev/smart-home-system/internal/user/grpc"
 	"github.com/MichaelGenchev/smart-home-system/internal/user/repository"
 	"github.com/MichaelGenchev/smart-home-system/internal/user/service"
-	grpcServer "github.com/MichaelGenchev/smart-home-system/internal/user/grpc"
 
 	"github.com/MichaelGenchev/smart-home-system/pkg/proto"
 	_ "github.com/lib/pq" // PostgreSQL driver
@@ -22,9 +22,9 @@ import (
 )
 
 type App struct {
-	cfg           *config.Config
-	sqlDB         *sql.DB
-	grpcServer    *grpc.Server
+	cfg         *config.Config
+	sqlDB       *sql.DB
+	grpcServer  *grpc.Server
 	userService *grpcServer.GRPCServer
 }
 
@@ -38,7 +38,7 @@ func (a *App) Initialize(ctx context.Context) error {
 	var err error
 
 	// Initialize SQL database connection
-	a.sqlDB, err = sql.Open("postgres", a.cfg.PostgresURI)
+	a.sqlDB, err = sql.Open("postgres", a.cfg.Database.UserPostgresURI)
 	if err != nil {
 		return fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
@@ -48,10 +48,8 @@ func (a *App) Initialize(ctx context.Context) error {
 		return fmt.Errorf("failed to ping PostgreSQL: %w", err)
 	}
 
-
 	// Initialize repositories
 	sqlRepo := repository.NewPostgresRepository(a.sqlDB)
-
 
 	// Initialize service
 	userservice := service.NewUserService(sqlRepo)
@@ -68,13 +66,13 @@ func (a *App) Initialize(ctx context.Context) error {
 
 func (a *App) Run() error {
 	// Start gRPC server
-	listener, err := net.Listen("tcp", a.cfg.GRPCAddr)
+	listener, err := net.Listen("tcp", a.cfg.Server.UserGRPCAddr)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %w", err)
 	}
 
 	go func() {
-		log.Printf("Starting gRPC server on %s", a.cfg.GRPCAddr)
+		log.Printf("Starting gRPC server on %s", a.cfg.Server.UserGRPCAddr)
 		if err := a.grpcServer.Serve(listener); err != nil {
 			log.Printf("gRPC server error: %v", err)
 		}
