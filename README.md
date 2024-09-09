@@ -33,7 +33,7 @@ The Smart Home Management System follows a microservices architecture, with the 
   └──────────────────┘ └──────────────────┘ └──────────────────┘
            │                 │                 │
   ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
-  │     MongoDB      │ │    PostgreSQL    │ │  Other Databases │
+  │     PostgreSQL   | │  PostgreSQL      │ │  Other Databases │
   └──────────────────┘ └──────────────────┘ └──────────────────┘
 ```
 
@@ -41,7 +41,7 @@ The Smart Home Management System follows a microservices architecture, with the 
 - **Device Service**: Manages smart home devices, their states, and operations.
 - **User Service**: Handles user authentication, authorization, and profile management.
 - **Other Services**: Placeholder for future services (e.g., Automation Service, Notification Service).
-- **Databases**: Each service has its own database (MongoDB for Device Service, PostgreSQL for User Service).
+- **Databases**: Each service can have it's own database.
 
 ## Services
 
@@ -171,10 +171,6 @@ To deploy the Smart Home Management System:
    ```
    make k8s-deploy-all
    ```
-
-## Contributing
-
-We welcome contributions to the Smart Home Management System! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
