@@ -33,7 +33,7 @@ The Smart Home Management System follows a microservices architecture, with the 
   └──────────────────┘ └──────────────────┘ └──────────────────┘
            │                 │                 │
   ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
-  │     PostgreSQL   | │  PostgreSQL      │ │  Other Databases │
+  │     MongoDB      | │  PostgreSQL      │ │  Other Databases │
   └──────────────────┘ └──────────────────┘ └──────────────────┘
 ```
 
